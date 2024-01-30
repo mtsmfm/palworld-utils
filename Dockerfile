@@ -16,11 +16,15 @@ RUN git clone https://github.com/cheahjs/palworld-save-tools
 
 COPY docker/palworld-save-tools-convert /usr/local/bin/palworld-save-tools-convert
 
-COPY package.json      /workdir/palworld-utils/package.json
-COPY package-lock.json /workdir/palworld-utils/package-lock.json
+WORKDIR /workdir/palworld-utils
 
-RUN cd palworld-utils && npm install
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
 
-COPY cli palworld-utils/cli
+COPY cli cli
+RUN npx esbuild cli/index.ts --bundle --platform=node --outdir=dist
+
+WORKDIR /workdir
 
 COPY docker/palworld-utils-cli /usr/local/bin/palworld-utils-cli

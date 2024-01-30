@@ -1,7 +1,3 @@
 #! /usr/bin/env bash
 
-cd /workdir/palworld-utils
-
-npx ts-node cli/index.ts "$@"
-
-cd -
+node /workdir/palworld-utils/dist/index.js "$@"
