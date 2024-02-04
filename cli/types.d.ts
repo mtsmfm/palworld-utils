@@ -65,3 +65,34 @@ export interface PalworldLevelSav {
     };
   };
 }
+
+export interface PalworldLocalSav {
+  properties: {
+    SaveData: {
+      value: {
+        Local_CustomMarkerSaveData: {
+          value: {
+            values: Array<{
+              IconLocation: {
+                struct_type: "Vector";
+                struct_id: "00000000-0000-0000-0000-000000000000";
+                id: null;
+                value: {
+                  x: number;
+                  y: number;
+                  z: 0.0;
+                };
+                type: "StructProperty";
+              };
+              IconType: {
+                id: null;
+                value: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+                type: "IntProperty";
+              };
+            }>;
+          };
+        };
+      };
+    };
+  };
+}

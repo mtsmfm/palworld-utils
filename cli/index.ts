@@ -1,7 +1,15 @@
 import { writeFile } from "fs/promises";
 import { PalworldLevelSav } from "./types";
-import { loadPalworldLevelSav } from "./utils";
+import {
+  loadLifmunkEffigyLocations,
+  loadPalworldLevelSav,
+  loadPalworldLocalSav,
+} from "./utils";
 import yargs from "yargs/yargs";
+import {
+  fromHumanReadableToInternalData,
+  fromInternalDataToHumanReadable,
+} from "./location";
 
 const main = async () => {
   await yargs(process.argv.slice(2))
@@ -47,6 +55,37 @@ const main = async () => {
       },
       async (argv) => {
         await removeDuplicatedGuilds(argv.path as string, argv.out as string);
+      }
+    )
+    .command(
+      "show-markers <path>",
+      "show markers",
+      (yargs) => {
+        yargs.positional("path", {
+          describe: "path to Level.sav.json",
+          type: "string",
+        });
+      },
+      async (argv) => {
+        await showMarkers(argv.path as string);
+      }
+    )
+    .command(
+      "add-lifmunk-effigy-markers <path> <out>",
+      "add lifmunk effigy markers",
+      (yargs) => {
+        yargs
+          .positional("path", {
+            describe: "path to LocalData.sav.json",
+            type: "string",
+          })
+          .positional("out", {
+            describe: "output to LocalData.sav.json",
+            type: "string",
+          });
+      },
+      async (argv) => {
+        await addLifmunkEffigyMarkers(argv.path as string, argv.out as string);
       }
     )
     .demandCommand()
@@ -155,6 +194,49 @@ const removeDuplicatedGuilds = async (path: string, out: string) => {
       ({ value }) =>
         !removeTargetGuildIds.includes(value.RawData.value.group_id)
     );
+
+  await writeFile(out, JSON.stringify(json));
+};
+
+const showMarkers = async (path: string) => {
+  const json = await loadPalworldLocalSav(path);
+
+  json.properties.SaveData.value.Local_CustomMarkerSaveData.value.values.forEach(
+    (v) => {
+      console.log(v.IconType.value);
+      console.log(fromInternalDataToHumanReadable(v.IconLocation.value));
+    }
+  );
+};
+
+const addLifmunkEffigyMarkers = async (path: string, out: string) => {
+  const json = await loadPalworldLocalSav(path);
+
+  const locations = await loadLifmunkEffigyLocations();
+
+  locations.forEach((location) => {
+    const internalPos = fromHumanReadableToInternalData(location);
+
+    json.properties.SaveData.value.Local_CustomMarkerSaveData.value.values.push(
+      {
+        IconLocation: {
+          struct_type: "Vector",
+          struct_id: "00000000-0000-0000-0000-000000000000",
+          id: null,
+          value: {
+            z: 0.0,
+            ...internalPos,
+          },
+          type: "StructProperty",
+        },
+        IconType: {
+          id: null,
+          value: 0,
+          type: "IntProperty",
+        },
+      }
+    );
+  });
 
   await writeFile(out, JSON.stringify(json));
 };
