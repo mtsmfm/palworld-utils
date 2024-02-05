@@ -25,3 +25,14 @@ export const loadLifmunkEffigyLocations = async () => {
 
   return json;
 };
+
+export const loadDungeonLocations = async () => {
+  const data = await readFile(join(__dirname, "dungeon_locations.json"));
+  const json: Array<{
+    x: number;
+    y: number;
+    level: number;
+  }> = JSON.parse(data.toString());
+
+  return json;
+};

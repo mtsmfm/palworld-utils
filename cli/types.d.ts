@@ -86,7 +86,17 @@ export interface PalworldLocalSav {
               };
               IconType: {
                 id: null;
-                value: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+                /**
+                 * 0: Pin
+                 * 1: Star
+                 * 2: Cube
+                 * 3: Mine
+                 * 4: Sphere
+                 * 5: Food
+                 * 6: Boss
+                 * 7: Home
+                 */
+                value: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
                 type: "IntProperty";
               };
             }>;
