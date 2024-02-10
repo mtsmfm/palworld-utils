@@ -9,6 +9,11 @@ RUN wget https://github.com/trumank/uesave-rs/releases/download/v0.3.0/uesave-x8
     mv uesave-x86_64-unknown-linux-gnu/uesave /usr/local/bin/uesave && \
     rm -rf uesave-x86_64-unknown-linux-gnu uesave-x86_64-unknown-linux-gnu.tar.xz
 
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf awscliv2.zip aws
+
 WORKDIR /workdir
 
 RUN git clone https://github.com/xNul/palworld-host-save-fix
